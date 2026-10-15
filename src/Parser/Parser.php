@@ -130,7 +130,6 @@ class Parser implements ParserInterface
 
         // Actually perform diff
         $diff = $this->diff($fromText, $toText, $delimiters);
-        $diff = is_array($diff) ? $diff : [];
 
         foreach ($diff as $fragment) {
             // increase granularity
