@@ -4,6 +4,7 @@ FineDiff
 Originally written by Raymond Hill ([https://github.com/gorhill/PHP-FineDiff](https://github.com/gorhill/PHP-FineDiff))
 
 [![Build Status](https://img.shields.io/travis/d4h/php-finediff.svg?style=flat-square)](https://travis-ci.org/d4h/php-finediff)
+[![Coverage Status](https://coveralls.io/repos/github/EcoOnline/php-finediff/badge.svg?branch=1.x)](https://coveralls.io/github/EcoOnline/php-finediff?branch=1.x)
 [![Latest Stable Version](https://img.shields.io/packagist/v/d4h/finediff.svg?style=flat-square)](https://packagist.org/packages/d4h/finediff)
 [![License](https://img.shields.io/github/license/d4h/php-finediff?style=flat-square)](#license)
 
