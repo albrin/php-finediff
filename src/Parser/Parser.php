@@ -33,7 +33,7 @@ class Parser implements ParserInterface
     protected $fromOffset = 0;
 
     /**
-     * @var OperationInterface
+     * @var OperationInterface|null
      */
     protected $lastEdit;
 
