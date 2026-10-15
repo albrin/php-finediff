@@ -1,0 +1,36 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: PHPUnit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: pcov
+
+      - name: Install dependencies
+        run: composer update --no-interaction --prefer-dist --no-progress
+
+      - name: Run tests with coverage
+        run: vendor/bin/phpunit --coverage-clover build/clover.xml
+
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/clover.xml
+          format: clover
