@@ -341,7 +341,7 @@ class Parser implements ParserInterface
                     $toCopyStartMax = $toSegmentEnd - $copyLen;
 
                     while ($toCopyStart <= $toCopyStartMax) {
-                        $fromCopyStart = mb_strpos(mb_substr($fromText, $fromSegmentStart, $fromSegmentLen), substr($toText, $toCopyStart, $copyLen));
+                        $fromCopyStart = mb_strpos(mb_substr($fromText, $fromSegmentStart, $fromSegmentLen), mb_substr($toText, $toCopyStart, $copyLen));
 
                         if ($fromCopyStart !== false) {
                             $fromCopyStart += $fromSegmentStart;
@@ -361,7 +361,7 @@ class Parser implements ParserInterface
                     $fromCopyStartMax = $fromSegmentEnd - $copyLen;
 
                     while ($fromCopyStart <= $fromCopyStartMax) {
-                        $toCopyStart = mb_strpos(mb_substr($toText, $toSegmentStart, $toSegmentLen), substr($fromText, $fromCopyStart, $copyLen));
+                        $toCopyStart = mb_strpos(mb_substr($toText, $toSegmentStart, $toSegmentLen), mb_substr($fromText, $fromCopyStart, $copyLen));
 
                         if ($toCopyStart !== false) {
                             $toCopyStart += $toSegmentStart;
@@ -417,18 +417,22 @@ class Parser implements ParserInterface
 
         $fragments = [];
         $start = 0;
-        $end = 0;
+        $byteOffset = 0;
 
         while (true) {
-            $end += strcspn($text, $delimiters, $end);
-            $end += strspn($text, $delimiters, $end);
+            $byteStart = $byteOffset;
+            $byteOffset += strcspn($text, $delimiters, $byteOffset);
+            $byteOffset += strspn($text, $delimiters, $byteOffset);
 
-            if ($end === $start) {
+            if ($byteOffset === $byteStart) {
                 break;
             }
 
-            $fragments[$start] = mb_substr($text, $start, $end - $start);
-            $start = $end;
+            // strcspn/strspn report bytes. Fragment keys are character offsets,
+            // because the diff walks the text with mb_strlen.
+            $length = mb_strlen(substr($text, $byteStart, $byteOffset - $byteStart));
+            $fragments[$start] = mb_substr($text, $start, $length);
+            $start += $length;
         }
 
         $fragments[$start] = '';

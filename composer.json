@@ -21,6 +21,7 @@
     ],
     "type": "library",
     "require": {
+        "ext-mbstring": "*",
         "php": "~8.1"
     },
     "require-dev": {
