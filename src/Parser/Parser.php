@@ -200,6 +200,8 @@ class Parser implements ParserInterface
 
             // find longest copy operation for the current segments
             $bestCopyLength = 0;
+            $bestFromStart = 0;
+            $bestToStart = 0;
 
             $fromBaseFragmentIndex = $fromSegmentStart;
             $cachedArrayKeysForCurrentSegment = [];
@@ -332,6 +334,9 @@ class Parser implements ParserInterface
 
                 continue;
             }
+
+            $fromCopyStart = 0;
+            $toCopyStart = 0;
 
             if ($fromSegmentLen >= $toSegmentLen) {
                 $copyLen = $toSegmentLen;
