@@ -395,8 +395,8 @@ class Parser implements ParserInterface
     /**
      * Efficiently fragment the text into an array according to specified delimiters.
      *
-     * No delimiters means fragment into single character. The array indices are the offset of the fragments into
-     * the input string. A sentinel empty fragment is always added at the end.
+     * The array indices are the offset of the fragments into the input string.
+     * A sentinel empty fragment is always added at the end.
      * Careful: No check is performed as to the validity of the delimiters.
      *
      * @param string $text
@@ -407,14 +407,6 @@ class Parser implements ParserInterface
      */
     protected function extractFragments($text, $delimiters): array
     {
-        // special case: split into characters
-        if (empty($delimiters)) {
-            $chars = mb_str_split($text);
-            $chars[mb_strlen($text)] = '';
-
-            return $chars;
-        }
-
         $fragments = [];
         $start = 0;
         $byteOffset = 0;
