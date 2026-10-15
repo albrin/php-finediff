@@ -34,4 +34,12 @@ class ProcessTest extends TestCase
 
         $this->assertEquals($html, 'Hello<ins>2</ins> world<del>s</del>');
     }
+
+    public function testUnknownOpcodeIsSkipped()
+    {
+        // An unknown opcode is ignored. It must not be passed to callback(),
+        // which rejects it, and it must not consume characters from the source.
+        $this->assertEquals('AB', $this->html->process('AB', 'zc2'));
+        $this->assertEquals('AB', $this->html->process('AB', 'c1xc1'));
+    }
 }

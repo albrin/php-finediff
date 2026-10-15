@@ -4,6 +4,7 @@ namespace FineDiff\Tests\Render\Html;
 
 use FineDiff\Render\Html;
 use FineDiff\Render\RendererInterface;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class CallbackTest extends TestCase
@@ -43,5 +44,13 @@ class CallbackTest extends TestCase
 
         $output = $this->html->callback('i', 'mon&key', 0, 100);
         $this->assertEquals($output, '<ins>mon&amp;key</ins>');
+    }
+
+    public function testUndefinedOpcode()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Undefined operation code "x"');
+
+        $this->html->callback('x', 'Hello', 0, 5);
     }
 }
