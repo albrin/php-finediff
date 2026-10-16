@@ -20,7 +20,7 @@ class Delete implements OperationInterface
     }
 
     /**
-     * @inheritdoc
+     * @return int
      */
     public function getFromLen()
     {

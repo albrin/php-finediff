@@ -43,7 +43,7 @@ class Parser implements ParserInterface
     protected $stackPointer = 0;
 
     /**
-     * @var array Holds the individual operation codes as the diff takes place.
+     * @var array<int, OperationInterface> Holds the individual operation codes as the diff takes place.
      */
     protected $edits = [];
 
@@ -67,7 +67,8 @@ class Parser implements ParserInterface
     }
 
     /**
-     * @inheritdoc
+     * @param GranularityInterface $granularity
+     * @return void
      */
     public function setGranularity(GranularityInterface $granularity)
     {
@@ -83,7 +84,8 @@ class Parser implements ParserInterface
     }
 
     /**
-     * @inheritdoc
+     * @param OperationCodesInterface $operationCodes
+     * @return void
      */
     public function setOperationCodes(OperationCodesInterface $operationCodes)
     {
@@ -121,11 +123,12 @@ class Parser implements ParserInterface
      *
      * @param string $fromText
      * @param string $toText
+     * @return void
      */
     protected function process($fromText, $toText)
     {
         // Lets get parsing
-        $delimiters = $this->granularity[$this->stackPointer++];
+        $delimiters = $this->stringDelimiter($this->granularity[$this->stackPointer++]);
         $hasNextStage = $this->stackPointer < count($this->granularity);
 
         // Actually perform diff
@@ -135,16 +138,16 @@ class Parser implements ParserInterface
             // increase granularity
             if ($fragment instanceof Replace && $hasNextStage) {
                 $this->process(
-                    mb_substr($this->formText, $this->fromOffset, $fragment->getFromLen()),
+                    mb_substr($this->formText, $this->fromOffset, $this->lengthOf($fragment)),
                     $fragment->getText()
                 );
             } elseif ($fragment instanceof Copy && $this->lastEdit instanceof Copy) {
                 // fuse copy ops whenever possible
-                $this->edits[count($this->edits)-1]->increase($fragment->getFromLen());
-                $this->fromOffset += $fragment->getFromLen();
+                $this->lastEdit->increase($fragment->getFromLen());
+                $this->fromOffset += $this->lengthOf($fragment);
             } else {
                 $this->edits[] = $this->lastEdit = $fragment;
-                $this->fromOffset += $fragment->getFromLen();
+                $this->fromOffset += $this->lengthOf($fragment);
             }
         }
 
@@ -433,5 +436,42 @@ class Parser implements ParserInterface
         $fragments[$start] = '';
 
         return $fragments;
+    }
+
+    /**
+     * Coerce a granularity delimiter to the string mask diff() expects.
+     *
+     * Scalars keep their historical behaviour: null, false, 0, 0.0, and an
+     * empty array select character diffing, and other scalars are cast to a
+     * character mask. Non-scalars fail with the same TypeError strcspn() raised.
+     *
+     * @throws \TypeError
+     */
+    private function stringDelimiter(mixed $delimiter): string
+    {
+        if (is_string($delimiter)) {
+            return $delimiter;
+        }
+
+        if ($delimiter === null || $delimiter === false || $delimiter === 0 || $delimiter === 0.0 || $delimiter === []) {
+            return '';
+        }
+
+        if (is_int($delimiter) || is_float($delimiter) || $delimiter === true) {
+            return (string) $delimiter;
+        }
+
+        throw new \TypeError(
+            'strcspn(): Argument #2 ($characters) must be of type string, '.get_debug_type($delimiter).' given'
+        );
+    }
+
+    /**
+     * Operation lengths used by the parser are ints. Replace::getFromLen()
+     * is int|string because its constructor accepts either.
+     */
+    private function lengthOf(OperationInterface $operation): int
+    {
+        return (int) $operation->getFromLen();
     }
 }

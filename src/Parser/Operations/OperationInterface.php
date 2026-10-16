@@ -26,7 +26,12 @@ interface OperationInterface
     const INSERT = 'i';
 
     /**
-     * @return int
+     * Characters consumed from the original text.
+     *
+     * Parser-built operations return an int. Replace also accepts a string
+     * from-length in its constructor and returns that value unchanged.
+     *
+     * @return int|string
      */
     public function getFromLen();
 

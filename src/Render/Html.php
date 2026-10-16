@@ -2,23 +2,22 @@
 
 namespace FineDiff\Render;
 
-use FineDiff\Parser\Operations\Operation;
 use FineDiff\Parser\Operations\OperationInterface;
 use InvalidArgumentException;
 
 class Html extends Renderer
 {
     /**
-     * @var array
+     * @var array{encoding: string, del_prefix: string, del_suffix: string, ins_prefix: string, ins_suffix: string, quote_style: int}
      */
-    protected $configRenderer = [];
+    protected $configRenderer;
 
     /**
-     * @param array $configRenderer
+     * @param array{encoding?: string, del_prefix?: string, del_suffix?: string, ins_prefix?: string, ins_suffix?: string, quote_style?: int} $configRenderer
      */
     public function __construct(array $configRenderer = [])
     {
-        $configRenderer += [
+        $defaults = [
             'encoding' => 'UTF-8',
             'del_prefix' => '<del>',
             'del_suffix' => '</del>',
@@ -27,7 +26,8 @@ class Html extends Renderer
             'quote_style' => ENT_COMPAT | (defined('ENT_HTML401') ? ENT_HTML401 : 0),
         ];
 
-        $this->configRenderer = $configRenderer;
+        // Left-hand keys win, so caller values override the defaults.
+        $this->configRenderer = $configRenderer + $defaults;
     }
 
     /**

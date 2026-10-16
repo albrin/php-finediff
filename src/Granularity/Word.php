@@ -9,7 +9,7 @@ class Word implements GranularityInterface
     use Granularity;
 
     /**
-     * @var array
+     * @var array<int|string, mixed>
      */
     private $delimiters = [
         Delimiters::PARAGRAPH,
