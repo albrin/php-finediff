@@ -1,0 +1,10 @@
+parameters:
+    level: 5
+    # Analyse against the minimum PHP version declared in composer.json.
+    phpVersion: 80100
+    paths:
+        - src
+    # Public methods document parameter types in PHPDoc and still validate
+    # them at runtime (is_string, instanceof, is_a). Do not treat those docs
+    # as certain, or the runtime guards look like dead code.
+    treatPhpDocTypesAsCertain: false

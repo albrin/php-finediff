@@ -33,7 +33,7 @@ class Parser implements ParserInterface
     protected $fromOffset = 0;
 
     /**
-     * @var OperationInterface
+     * @var OperationInterface|null
      */
     protected $lastEdit;
 
@@ -130,7 +130,6 @@ class Parser implements ParserInterface
 
         // Actually perform diff
         $diff = $this->diff($fromText, $toText, $delimiters);
-        $diff = is_array($diff) ? $diff : [];
 
         foreach ($diff as $fragment) {
             // increase granularity
@@ -200,6 +199,8 @@ class Parser implements ParserInterface
 
             // find longest copy operation for the current segments
             $bestCopyLength = 0;
+            $bestFromStart = 0;
+            $bestToStart = 0;
 
             $fromBaseFragmentIndex = $fromSegmentStart;
             $cachedArrayKeysForCurrentSegment = [];
@@ -333,6 +334,9 @@ class Parser implements ParserInterface
                 continue;
             }
 
+            $fromCopyStart = 0;
+            $toCopyStart = 0;
+
             if ($fromSegmentLen >= $toSegmentLen) {
                 $copyLen = $toSegmentLen;
 
@@ -401,7 +405,6 @@ class Parser implements ParserInterface
      *
      * @param string $text
      * @param string $delimiters
-     * @param array
      *
      * @return string[]
      */
