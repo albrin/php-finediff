@@ -25,21 +25,21 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          coverage: ${{ matrix.php == '8.3' && 'pcov' || 'none' }}
+          coverage: ${{ matrix.php == '8.5' && 'pcov' || 'none' }}
 
       - name: Install dependencies
         run: composer update --no-interaction --prefer-dist --no-progress
 
       - name: Run tests
-        if: matrix.php != '8.3'
+        if: matrix.php != '8.5'
         run: vendor/bin/phpunit
 
       - name: Run tests with coverage
-        if: matrix.php == '8.3'
+        if: matrix.php == '8.5'
         run: vendor/bin/phpunit --coverage-clover build/clover.xml
 
       - name: Upload coverage to Coveralls
-        if: matrix.php == '8.3'
+        if: matrix.php == '8.5'
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
