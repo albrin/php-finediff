@@ -25,6 +25,7 @@ interface ParserInterface
      * Set the granularity that the parser is working with.
      *
      * @param GranularityInterface $granularity
+     * @return void
      */
     public function setGranularity(GranularityInterface $granularity);
 

@@ -20,7 +20,7 @@ class Copy implements OperationInterface
     }
 
     /**
-     * @inheritdoc
+     * @return int
      */
     public function getFromLen()
     {

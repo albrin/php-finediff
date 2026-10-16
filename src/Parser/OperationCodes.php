@@ -13,7 +13,7 @@ class OperationCodes implements OperationCodesInterface
     protected $operationCodes = [];
 
     /**
-     * @inheritdoc
+     * @return string[]
      */
     public function getOperationCodes(): array
     {
@@ -21,7 +21,9 @@ class OperationCodes implements OperationCodesInterface
     }
 
     /**
-     * @inheritdoc
+     * @param OperationInterface[] $operationCodes
+     * @throws OperationException
+     * @return void
      */
     public function setOperationCodes(array $operationCodes)
     {

@@ -15,7 +15,7 @@ class Replace implements OperationInterface
     private $text;
 
     /**
-     * @param $fromLen
+     * @param int|string $fromLen
      * @param string $text
      */
     public function __construct($fromLen, string $text)
@@ -25,7 +25,7 @@ class Replace implements OperationInterface
     }
 
     /**
-     * @inheritdoc
+     * @return int|string
      */
     public function getFromLen()
     {

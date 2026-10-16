@@ -7,6 +7,8 @@ use FineDiff\Delimiters;
 use FineDiff\Granularity\Character;
 use FineDiff\Granularity\GranularityInterface;
 use PHPUnit\Framework\TestCase;
+use stdClass;
+use TypeError;
 
 class CharacterTest extends TestCase
 {
@@ -88,5 +90,40 @@ class CharacterTest extends TestCase
         // Unset
         unset($this->granularity[ count($this->delimiters) ]);
         $this->assertCount(count($this->granularity), $this->delimiters);
+    }
+
+    public function testStringOffset()
+    {
+        $this->granularity['extra'] = Delimiters::CHARACTER;
+
+        $this->assertTrue(isset($this->granularity['extra']));
+        $this->assertEquals(Delimiters::CHARACTER, $this->granularity['extra']);
+
+        unset($this->granularity['extra']);
+        $this->assertFalse(isset($this->granularity['extra']));
+    }
+
+    public function testCoercedOffsetsMatchArrayKeys()
+    {
+        $this->assertTrue(isset($this->granularity[1.9]));
+        $this->assertEquals($this->delimiters[1], $this->granularity[1.9]);
+        $this->assertEquals($this->delimiters[0], $this->granularity[false]);
+        $this->assertFalse(isset($this->granularity[null]));
+        $this->assertNull($this->granularity[null]);
+
+        $this->granularity[true] = 'coerced';
+        $this->assertEquals('coerced', $this->granularity[1]);
+
+        unset($this->granularity[null]);
+        $this->assertFalse(isset($this->granularity['']));
+    }
+
+    public function testIllegalOffset()
+    {
+        $this->expectException(TypeError::class);
+        $this->expectExceptionMessage('Cannot access offset of type stdClass on array');
+
+        $offset = new stdClass();
+        $this->granularity[$offset] = 'x';
     }
 }

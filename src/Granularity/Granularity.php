@@ -9,7 +9,7 @@ trait Granularity
      */
     public function offsetExists(mixed $offset): bool
     {
-        return isset($this->delimiters[$offset]);
+        return isset($this->delimiters[$this->delimiterKey($offset)]);
     }
 
     /**
@@ -17,7 +17,7 @@ trait Granularity
      */
     public function offsetGet(mixed $offset): mixed
     {
-        return $this->delimiters[$offset] ?? null;
+        return $this->delimiters[$this->delimiterKey($offset)] ?? null;
     }
 
     /**
@@ -25,11 +25,14 @@ trait Granularity
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
+        // A null offset appends, matching ArrayAccess. It is not key "".
         if ($offset === null) {
             $this->delimiters[] = $value;
-        } else {
-            $this->delimiters[$offset] = $value;
+
+            return;
         }
+
+        $this->delimiters[$this->delimiterKey($offset)] = $value;
     }
 
     /**
@@ -37,7 +40,7 @@ trait Granularity
      */
     public function offsetUnset(mixed $offset): void
     {
-        unset($this->delimiters[$offset]);
+        unset($this->delimiters[$this->delimiterKey($offset)]);
     }
 
     /**
@@ -51,7 +54,7 @@ trait Granularity
     }
 
     /**
-     * @inheritdoc
+     * @return array<int|string, mixed>
      */
     public function getDelimiters(): array
     {
@@ -59,10 +62,36 @@ trait Granularity
     }
 
     /**
-     * @inheritdoc
+     * @param array<int|string, mixed> $delimiters
+     * @return void
      */
     public function setDelimiters(array $delimiters)
     {
         $this->delimiters = $delimiters;
+    }
+
+    /**
+     * Normalize an ArrayAccess offset to a legal PHP array key.
+     *
+     * Floats and bools are cast to int, and null becomes "", matching PHP
+     * array-key coercion. Objects, arrays, and resources are illegal keys.
+     *
+     * @throws \TypeError
+     */
+    private function delimiterKey(mixed $offset): int|string
+    {
+        if (is_int($offset) || is_string($offset)) {
+            return $offset;
+        }
+
+        if (is_float($offset) || is_bool($offset)) {
+            return (int) $offset;
+        }
+
+        if ($offset === null) {
+            return '';
+        }
+
+        throw new \TypeError('Cannot access offset of type '.get_debug_type($offset).' on array');
     }
 }

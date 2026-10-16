@@ -58,6 +58,7 @@ class Diff
      * Set the granularity level of the parser.
      *
      * @param GranularityInterface $granularity
+     * @return void
      */
     public function setGranularity(GranularityInterface $granularity)
     {
@@ -78,6 +79,7 @@ class Diff
      * Set the renderer.
      *
      * @param RendererInterface $renderer
+     * @return void
      */
     public function setRenderer(RendererInterface $renderer)
     {
@@ -98,6 +100,7 @@ class Diff
      * Set the parser.
      *
      * @param ParserInterface $parser
+     * @return void
      */
     public function setParser(ParserInterface $parser)
     {
