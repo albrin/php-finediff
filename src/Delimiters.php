@@ -11,6 +11,11 @@ abstract class Delimiters
 
     /**
      * Do not allow this class to be instantiated.
+     *
+     * Constants-only class: the constructor is private and has no behaviour,
+     * so there is nothing meaningful to execute.
+     *
+     * @codeCoverageIgnore
      */
     private function __construct()
     {

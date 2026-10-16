@@ -5,6 +5,7 @@ namespace FineDiff\Tests\Parser;
 use FineDiff\Exceptions\GranularityCountException;
 use FineDiff\Parser\OperationCodesInterface;
 use FineDiff\Granularity\Character;
+use FineDiff\Granularity\Word;
 use FineDiff\Parser\Parser;
 use FineDiff\Parser\ParserInterface;
 use Mockery as m;
@@ -69,5 +70,19 @@ class ParserTest extends TestCase
         $this->parser->parse('Hello worlds', 'Hello2 world');
 
         $this->assertTrue(true);
+    }
+
+    public function testSetGranularity()
+    {
+        $from = 'hello world';
+        $to = 'hello there';
+
+        $this->assertEquals('c6d2i3:thecd2i:e', (string) $this->parser->parse($from, $to));
+
+        $word = new Word();
+        $this->parser->setGranularity($word);
+
+        $this->assertSame($word, $this->parser->getGranularity());
+        $this->assertEquals('c6d5i5:there', (string) $this->parser->parse($from, $to));
     }
 }
